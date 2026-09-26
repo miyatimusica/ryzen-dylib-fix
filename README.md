@@ -69,7 +69,7 @@ En lugar de aplicar *patches* estáticos sobre los archivos binarios (lo que des
 Abre la **Terminal** de tu macOS y ejecuta el siguiente comando:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/miyatimusica/ryzen-dylib-fix/main/install.sh | zsh
+curl -fsSL https://raw.githubusercontent.com/miyatimusica/ryzen-dylib-fix/main/ryzen-dylib-fix.sh | zsh
 ```
 
 ---
@@ -86,12 +86,12 @@ Si prefieres realizar el proceso paso a paso:
 
 2. **Asignar permisos de ejecución:**
    ```bash
-   chmod +x install.sh
+   chmod +x ryzen-dylib-fix.sh
    ```
 
 3. **Ejecutar el instalador:**
    ```bash
-   ./install.sh
+   ./ryzen-dylib-fix.sh
    ```
 
 ---
