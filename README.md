@@ -31,7 +31,7 @@ Debido a la forma en que `NootEDred.kext` expone las propiedades de la iGPU Vega
 -[__NSCFData _fastCStringContents:]: unrecognized selector sent to instance 0x...
 zsh: segmentation fault  /Applications/Native Instruments/Kontakt 7/Kontakt 7.app
 
-# 💡 La Solución
+## 💡 La Solución
 
 En lugar de parchear binarios (lo que destruye las firmas digitales y requiere repetir el proceso en cada actualización), **ryzen-dylib-fix** utiliza inyección de librerías dinámicas en tiempo de ejecución:
 
