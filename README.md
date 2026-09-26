@@ -30,3 +30,114 @@ Debido a la forma en que `NootEDred.kext` expone las propiedades de la iGPU Vega
 ```text
 -[__NSCFData _fastCStringContents:]: unrecognized selector sent to instance 0x...
 zsh: segmentation fault  /Applications/Native Instruments/Kontakt 7/Kontakt 7.app
+
+# 💡 La Solución
+
+En lugar de parchear binarios (lo que destruye las firmas digitales y requiere repetir el proceso en cada actualización), **ryzen-dylib-fix** utiliza inyección de librerías dinámicas en tiempo de ejecución:
+
+* 🧩 **Categoría de Runtime:** Añade una categoría en Objective-C a `NSData` en memoria con impacto nulo en el rendimiento.
+* 🛡️ **Intercepción Segura:** Intercepta los llamados fallidos (`_fastCStringContents:`, `UTF8String`, etc.) y responde con un texto válido: `"AMD Radeon Graphics"`.
+* 🔄 **Persistencia en el Sistema:** Configura un `LaunchAgent` a nivel de usuario con `DYLD_INSERT_LIBRARIES` para que las aplicaciones, plugins (VST3/AU/AAX) y hosts independientes funcionen sin problemas tras cada reinicio.
+
+---
+
+## ⚡ Instalación Rápida (Comando de 1 Línea)
+
+Abre la Terminal de tu macOS y ejecuta el siguiente comando:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/miyatimusica/ryzen-dylib-fix/main/install.sh | zsh
+```
+
+---
+
+## 🛠️ Instalación Manual
+
+Si prefieres realizar el proceso paso a paso:
+
+1. **Clonar el repositorio:**
+   ```bash
+   git clone https://github.com/miyatimusica/ryzen-dylib-fix.git
+   cd ryzen-dylib-fix
+   ```
+
+2. **Otorgar permisos de ejecución:**
+   ```bash
+   chmod +x install.sh
+   ```
+
+3. **Ejecutar el instalador:**
+   ```bash
+   ./install.sh
+   ```
+
+---
+
+## 🔍 Verificación
+
+Para confirmar que la librería global está inyectada y activa en tu sesión actual, ejecuta:
+
+```bash
+launchctl getenv DYLD_INSERT_LIBRARIES
+```
+
+**Resultado esperado:**
+```text
+/Library/Application Support/Ryzentosh/ryzen_fix.dylib
+```
+
+---
+
+## 🎹 Compatibilidad Confirmada
+
+### Software Probado
+
+| Software / Plugin | Tipo | Estado |
+| :--- | :--- | :---: |
+| Native Instruments Kontakt 8 | Standalone / VST3 / AU | ✅ Funcional |
+| Native Instruments Kontakt 7 | Standalone / VST3 / AU | ✅ Funcional |
+| Komplete Kontrol | Standalone / VST3 / AU | ✅ Funcional |
+| Maschine 2 | Standalone / VST3 / AU | ✅ Funcional |
+| Steinberg Cubase 10 / 11 / 12 / 13 | Host DAW | ✅ Funcional |
+| Image-Line FL Studio | Host DAW | ✅ Funcional |
+| Ableton Live 11 / 12 | Host DAW | ✅ Funcional |
+
+### Hardware y Entorno Probados
+
+* **Procesadores:** AMD Ryzen 3 3200U, Ryzen 5 3500U, Ryzen 7 3700U, APUs Series Ryzen 4000/5000/6000/7000.
+* **Driver de iGPU:** `NootEDred.kext` (Gráficos Vega).
+* **Versiones de macOS:** macOS 12 Monterey, macOS 13 Ventura, macOS 14 Sonoma, macOS 15 Sequoia.
+
+---
+
+## 🗑️ Desinstalación
+
+Si deseas remover el parche por completo y restaurar la configuración por defecto de tu sistema:
+
+```bash
+# 1. Desactivar y eliminar el LaunchAgent
+launchctl unload -w "$HOME/Library/LaunchAgents/com.ryzentosh.globalfix.plist" 2>/dev/null
+rm -f "$HOME/Library/LaunchAgents/com.ryzentosh.globalfix.plist"
+
+# 2. Desactivar la variable de entorno en la sesión activa
+launchctl unsetenv DYLD_INSERT_LIBRARIES
+
+# 3. Eliminar la librería compilada
+sudo rm -rf "/Library/Application Support/Ryzentosh"
+```
+
+---
+
+## 🤝 Contribuciones y Soporte
+
+¡Las contribuciones, reportes de errores y sugerencias son bienvenidos!
+
+Si este proyecto te ayudó a ejecutar el software de Native Instruments en tu Ryzentosh, ¡considera darle una ⭐️ **Estrella (Star)** al repositorio en GitHub!
+
+---
+
+## 📄 Licencia
+
+Distribuido bajo la Licencia MIT. Consulta el archivo `LICENSE` para más detalles.
+
+*Desarrollado con ❤️ para la comunidad de Ryzentosh y Hackintosh.*
