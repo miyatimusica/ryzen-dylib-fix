@@ -1,6 +1,6 @@
 <div align="center">
 
-# ⚡ ryzen-dylib-fix
+# ⚡ Ryzen-Dylib-Fix
 
 **Parche Universal Runtime Dylib para Ryzentosh (AMD Ryzen + NootEDred)**
 
